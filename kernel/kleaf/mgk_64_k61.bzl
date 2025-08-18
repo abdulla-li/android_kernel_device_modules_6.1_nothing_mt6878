@@ -629,13 +629,6 @@ mgk_64_k61_device_modules = [
     "drivers/power/supply/nu2115_charger.ko",
     "drivers/power/supply/nt_usb_ts.ko",
     "drivers/power/supply/nt_chg.ko",
-    "drivers/nothing_stability/nothing_writeback_kmsg.ko",
-    "drivers/nothing_stability/nothing_task_meminfo.ko",
-    "drivers/nothing_stability/nothing_value_check.ko",
-    "drivers/nothing_stability/nothing_task_info.ko",
-    "drivers/nothing_stability/nothing_disk_usage.ko",
-    "drivers/nothing_stability/nothing_readahead_trace.ko",
-    "drivers/nothing_stability/nothing_check_parts.ko",
 ]
 
 mgk_64_k61_platform_device_modules = {
