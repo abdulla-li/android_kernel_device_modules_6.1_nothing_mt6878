@@ -388,62 +388,6 @@ static unsigned int ged_dvfs_ultra_low_step_size_query(void)
 		return (dvfs_step_mode & 0xff00) >> 8;
 }
 
-static void ged_dvfs_early_force_fallback(struct GpuUtilization_Ex *Util_Ex)
-{
-	unsigned int util_iter = Util_Ex->util_iter;
-	unsigned int util_mcu = Util_Ex->util_mcu;
-	unsigned int sum = util_iter+util_mcu;
-
-	if ((sum >= 110 && util_iter >= 70) ||
-		(sum >= 110 && util_mcu >= 70) ||
-		util_iter >= 90 ||
-		util_mcu >= 90)
-		early_force_fallback = 1;
-	else
-		early_force_fallback = 0;
-
-}
-
-static unsigned int ged_dvfs_ultra_high_step_size_query(void)
-{
-	if (g_max_core_num == SHADER_CORE &&
-		gx_dvfs_loading_mode == LOADING_MAX_ITERMCU &&
-		early_force_fallback_enable)
-		return ULTRA_HIGH_STEP_SIZE ;
-	else
-		return (dvfs_step_mode & 0xff);
-}
-
-static unsigned int ged_dvfs_ultra_low_step_size_query(void)
-{
-	if (g_max_core_num == SHADER_CORE &&
-		gx_dvfs_loading_mode == LOADING_MAX_ITERMCU &&
-		early_force_fallback_enable)
-		return ULTRA_LOW_STEP_SIZE ;
-	else
-		return (dvfs_step_mode & 0xff00) >> 8;
-}
-
-static unsigned int ged_dvfs_high_step_size_query(void)
-{
-	if (g_max_core_num == SHADER_CORE &&
-		gx_dvfs_loading_mode == LOADING_MAX_ITERMCU &&
-		early_force_fallback_enable)
-		return ULTRA_LOW_STEP_SIZE ;
-	else
-		return 1;
-}
-
-static unsigned int ged_dvfs_low_step_size_query(void)
-{
-	if (g_max_core_num == SHADER_CORE &&
-		gx_dvfs_loading_mode == LOADING_MAX_ITERMCU &&
-		early_force_fallback_enable)
-		return ULTRA_LOW_STEP_SIZE ;
-	else
-		return 1;
-}
-
 static void _init_loading_ud_table(void)
 {
 	int i;
@@ -802,15 +746,6 @@ bool ged_dvfs_cal_gpu_utilization_ex(unsigned int *pui32Loading,
 			trace_GPU_DVFS__Loading(Util_Ex->util_active, Util_Ex->util_ta,
 					Util_Ex->util_3d, Util_Ex->util_compute, Util_Ex->util_iter,
 					Util_Ex->util_mcu);
-
-			//use loading to decide whether early force fallback in LOADING_MAX_ITERMCU & loading base
-			if (g_max_core_num == SHADER_CORE &&
-				gx_dvfs_loading_mode == LOADING_MAX_ITERMCU &&
-				!is_fb_dvfs_triggered &&
-				early_force_fallback_enable)
-				ged_dvfs_early_force_fallback(Util_Ex);
-			else
-				early_force_fallback = 0 ;
 
 			//use loading to decide whether early force fallback in LOADING_MAX_ITERMCU & loading base
 			if (g_max_core_num == SHADER_CORE &&
